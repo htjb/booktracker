@@ -4,6 +4,7 @@
 #include <iostream>
 #include <string>
 
-void add(std::string title);
+void add(std::string title, int databaseLength);
+void list();
 
 #endif 
