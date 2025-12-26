@@ -14,8 +14,11 @@ int main(int argc, char* argv[]) {
     int databaseLength = books.size();
 
     if (command == "add") {
-        add(argv[2], databaseLength);
-    } else if (command == "list") {
+        addBook(argv[2], databaseLength);
+    } else if (command == "delete" || command == "del") {
+        int id = stoi(argv[2]);
+        deleteBook(id, books);
+    } else if (command == "list" || command == "ls") {
         list();
     } else {
         cout << "Unknown command: " << command << endl;

@@ -3,8 +3,10 @@
 
 #include <iostream>
 #include <string>
+#include "book.h"
 
-void add(std::string title, int databaseLength);
+void addBook(std::string title, int databaseLength);
+void deleteBook(int id, std::vector<Book> books);
 void list();
 
 #endif 

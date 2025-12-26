@@ -8,6 +8,7 @@ struct Book {
     std::string title;
     std::string author;
     std::string dayStarted;
+    std::string dayCompleted;
     std::string status;
 };
 

@@ -6,7 +6,6 @@
 #include <vector>
 
 void saveBook(Book b);
-
 std::vector<Book> loadBooks();
 
 #endif
