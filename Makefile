@@ -28,5 +28,6 @@ tidy:
 
 install: $(TARGET)
 	sudo mv $(TARGET) $(BINDIR)
+	rm -f $(OBJ) $(DEP)
 
 .PHONY: clean tidy install
