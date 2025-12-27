@@ -22,7 +22,7 @@ int main(int argc, char *argv[]) {
   }
 
   string homeDir = getenv("HOME");
-  cout << "Using home directory: " << homeDir << endl;
+ 
   vector<Book> books = loadBooks(homeDir);
   vector<int> ids;
   for (Book b : books) {
