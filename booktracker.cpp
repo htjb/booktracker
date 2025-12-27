@@ -1,28 +1,39 @@
-#include <iostream>
-#include <vector>
+#include "src/book.h"
 #include "src/commands.h"
 #include "src/database.h"
-#include "src/book.h"
+#include <algorithm>
+#include <iostream>
+#include <vector>
 
 using namespace std;
 
-int main(int argc, char* argv[]) {
-    string command = argv[1];
-    
-    vector<Book> books = loadBooks();
+int main(int argc, char *argv[]) {
 
-    int databaseLength = books.size();
+  const vector<string> allowed_commands{"add",    "ls",  "list",   "del",
+                                        "delete", "mod", "modify", "help",
+                                        "show"};
 
-    if (command == "add") {
-        addBook(argv[2], databaseLength);
-    } else if (command == "delete" || command == "del") {
-        int id = stoi(argv[2]);
-        deleteBook(id, books);
-    } else if (command == "list" || command == "ls") {
-        list();
-    } else {
-        cout << "Unknown command: " << command << endl;
-        return 1;
-    }
-    return 0;
+  string command = argv[1];
+
+  if (find(allowed_commands.begin(), allowed_commands.end(), command) ==
+      allowed_commands.end()) {
+    cout << "Unknown command: " << command << endl;
+    return 1;
+  }
+  vector<Book> books = loadBooks();
+
+  int databaseLength = books.size();
+
+  if (command == "add") {
+    addBook(argv[2], databaseLength);
+  } else if (command == "delete" || command == "del") {
+    int id = stoi(argv[2]);
+    deleteBook(id, books);
+  } else if (command == "list" || command == "ls") {
+    list(books);
+  } else if (command == "show") {
+    int id = stoi(argv[2]);
+    showBook(id, books);
+  }
+  return 0;
 }
