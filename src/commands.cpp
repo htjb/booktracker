@@ -1,13 +1,17 @@
 #include "book.h"
 #include "database.h"
+#include <algorithm>
 #include <fstream>
+#include <iomanip>
 #include <iostream>
 #include <string>
-#include <iomanip>
+#include <vector>
 
 using namespace std;
 
 void addBook(string title, int databaseLength) {
+
+  const vector<string> validStatuses{"reading", "completed", "tbr", "dnf"};
 
   struct Book newBook;
   newBook.title = title;
@@ -18,6 +22,16 @@ void addBook(string title, int databaseLength) {
   getline(cin, newBook.dayStarted);
   cout << "Status (e.g., reading, completed): ";
   getline(cin, newBook.status);
+  while (find(validStatuses.begin(), validStatuses.end(),
+              newBook.status) == validStatuses.end()) {
+    cout << "Invalid status. Please enter one of the following: ";
+    for (const auto &status : validStatuses) {
+      cout << status << " ";
+    }
+    cout << endl;
+    cout << "Status: ";
+    getline(cin, newBook.status);
+  }
   cout << "Day completed (if applicable, else leave blank): ";
   getline(cin, newBook.dayCompleted);
   cout << "Notes (if any, else leave blank): ";
@@ -39,28 +53,20 @@ void deleteBook(int id, vector<Book> books) {
   ofstream out("books.txt", ios::trunc);
   for (Book b : books) {
     out << b.id << "|" << b.title << "|" << b.author << "|" << b.dayStarted
-        << "|" << b.dayCompleted << "|" << b.status << "\n";
+        << "|" << b.dayCompleted << "|" << b.status << "|" << b.notes << "\n";
   }
 }
 
 void list(vector<Book> books) {
-  cout << left
-       << setw(4)  << "ID" 
-       << setw(25) << "Title"
-       << setw(20) << "Author"
-       << setw(14) << "Started"
-       << setw(16) << "Completed"
-       << setw(10) << "Status" << '\n';
+  cout << left << setw(4) << "ID" << setw(25) << "Title" << setw(20) << "Author"
+       << setw(14) << "Started" << setw(16) << "Completed" << setw(10)
+       << "Status" << '\n';
 
   cout << string(89, '-') << '\n';
 
-  for (const auto& b : books) {
-    cout << left
-         << setw(4)  << b.id
-         << setw(25) << b.title
-         << setw(20) << b.author
-         << setw(14) << b.dayStarted
-         << setw(16) << b.dayCompleted
+  for (const auto &b : books) {
+    cout << left << setw(4) << b.id << setw(25) << b.title << setw(20)
+         << b.author << setw(14) << b.dayStarted << setw(16) << b.dayCompleted
          << setw(10) << b.status << '\n';
   }
 }
@@ -68,15 +74,52 @@ void list(vector<Book> books) {
 void showBook(int id, vector<Book> books) {
   for (Book b : books) {
     if (b.id == id) {
-      cout << "ID: " << b.id << endl;
-      cout << "Title: " << b.title << endl;
-      cout << "Author: " << b.author << endl;
-      cout << "Day Started: " << b.dayStarted << endl;
-      cout << "Day Completed: " << b.dayCompleted << endl;
-      cout << "Status: " << b.status << endl;
-      cout << "Notes: " << b.notes << endl;
+      cout << left << setw(15) << "ID: " << b.id << endl;
+      cout << left << setw(15) << "Title: " << b.title << endl;
+      cout << left << setw(15) << "Author: " << b.author << endl;
+      cout << left << setw(15) << "Day Started: " << b.dayStarted << endl;
+      cout << left << setw(15) << "Day Completed: " << b.dayCompleted << endl;
+      cout << left << setw(15) << "Status: " << b.status << endl;
+      cout << left << setw(15) << "Notes: " << b.notes << endl;
       return;
     }
   }
   cout << "Book with ID " << id << " not found." << endl;
+}
+
+void modifyBook(int id, string section, string newValue, vector<Book> books) {
+
+  const vector<string> validSections{"title",     "author", "started",
+                                     "completed", "status", "notes"};
+  if (find(validSections.begin(), validSections.end(), section) ==
+      validSections.end()) {
+    cout << "Invalid section: " << section << endl;
+    return;
+  }
+
+  for (int i = 0; i < books.size(); i++) {
+    if (books[i].id == id) {
+      cout << "Modifying book with ID: " << id << endl;
+      if (section == "title") {
+        books[i].title = newValue;
+      } else if (section == "author") {
+        books[i].author = newValue;
+      } else if (section == "started") {
+        books[i].dayStarted = newValue;
+      } else if (section == "completed") {
+        books[i].dayCompleted = newValue;
+      } else if (section == "status") {
+        books[i].status = newValue;
+      } else if (section == "notes") {
+        books[i].notes = newValue;
+      } 
+    cout << "Book with ID " << id << " has been modified." << endl;
+    }
+  }
+
+  ofstream out("books.txt", ios::trunc);
+  for (Book b : books) {
+    out << b.id << "|" << b.title << "|" << b.author << "|" << b.dayStarted
+        << "|" << b.dayCompleted << "|" << b.status << "|" << b.notes << "\n";
+  }
 }

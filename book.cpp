@@ -9,9 +9,8 @@ using namespace std;
 
 int main(int argc, char *argv[]) {
 
-  const vector<string> allowed_commands{"add",    "ls",  "list",   "del",
-                                        "delete", "mod", "modify", "help",
-                                        "show"};
+  const vector<string> allowed_commands{
+      "add", "ls", "list", "del", "delete", "mod", "modify", "help", "show"};
 
   string command = argv[1];
 
@@ -21,11 +20,16 @@ int main(int argc, char *argv[]) {
     return 1;
   }
   vector<Book> books = loadBooks();
+  vector<int> ids;
+  for (Book b : books) {
+    ids.push_back(b.id);
+  }
 
-  int databaseLength = books.size();
+  int maxId =
+      ids.size() > 0 ? *max_element(ids.begin(), ids.end()) : 0;
 
   if (command == "add") {
-    addBook(argv[2], databaseLength);
+    addBook(argv[2], maxId);
   } else if (command == "delete" || command == "del") {
     int id = stoi(argv[2]);
     deleteBook(id, books);
@@ -35,9 +39,12 @@ int main(int argc, char *argv[]) {
     int id = stoi(argv[2]);
     showBook(id, books);
   } else if (command == "mod" || command == "modify") {
-    cout << "Modify command not yet implemented." << endl;
+    int id = stoi(argv[2]);
+    modifyBook(id, argv[3], argv[4], books);
   } else if (command == "help") {
-    cout << "Available commands: add, list (ls), delete (del), show, modify (mod), help" << endl;
+    cout << "Available commands: add, list (ls), delete (del), show, modify "
+            "(mod), help"
+         << endl;
   }
   return 0;
 }
