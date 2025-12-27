@@ -34,6 +34,10 @@ int main(int argc, char *argv[]) {
   } else if (command == "show") {
     int id = stoi(argv[2]);
     showBook(id, books);
+  } else if (command == "mod" || command == "modify") {
+    cout << "Modify command not yet implemented." << endl;
+  } else if (command == "help") {
+    cout << "Available commands: add, list (ls), delete (del), show, modify (mod), help" << endl;
   }
   return 0;
 }
