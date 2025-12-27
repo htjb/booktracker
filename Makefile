@@ -5,7 +5,10 @@ OBJ := $(SRC:.cpp=.o)
 
 CXXFLAGS = -MMD -MP 
 
-TARGET = booktracker
+TARGET = book
+
+PREFIX ?= /usr/local
+BINDIR = $(PREFIX)/bin
 
 $(TARGET) : $(OBJ)
 	$(CXX) $(OBJ) -o $@
@@ -23,4 +26,7 @@ clean:
 tidy:
 	rm -f $(OBJ) $(DEP)
 
-.PHONY: clean tidy
+install: $(TARGET)
+	sudo cp $(TARGET) $(BINDIR)
+
+.PHONY: clean tidy install

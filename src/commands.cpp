@@ -1,5 +1,6 @@
 #include "book.h"
 #include "database.h"
+#include "utils.h"
 #include <algorithm>
 #include <fstream>
 #include <iomanip>
@@ -22,8 +23,8 @@ void addBook(string title, int databaseLength) {
   getline(cin, newBook.dayStarted);
   cout << "Status (e.g., reading, completed): ";
   getline(cin, newBook.status);
-  while (find(validStatuses.begin(), validStatuses.end(),
-              newBook.status) == validStatuses.end()) {
+  while (find(validStatuses.begin(), validStatuses.end(), newBook.status) ==
+         validStatuses.end()) {
     cout << "Invalid status. Please enter one of the following: ";
     for (const auto &status : validStatuses) {
       cout << status << " ";
@@ -39,7 +40,7 @@ void addBook(string title, int databaseLength) {
 
   cout << "Added book: " << newBook.title << endl;
 
-  saveBook(newBook);
+  saveBook(newBook, getenv("HOME"));
 }
 
 void deleteBook(int id, vector<Book> books) {
@@ -49,12 +50,7 @@ void deleteBook(int id, vector<Book> books) {
       cout << "Deleted book with ID: " << id << endl;
     }
   }
-
-  ofstream out("books.txt", ios::trunc);
-  for (Book b : books) {
-    out << b.id << "|" << b.title << "|" << b.author << "|" << b.dayStarted
-        << "|" << b.dayCompleted << "|" << b.status << "|" << b.notes << "\n";
-  }
+  saveAllBooks(books, getenv("HOME"));
 }
 
 void list(vector<Book> books) {
@@ -91,6 +87,8 @@ void modifyBook(int id, string section, string newValue, vector<Book> books) {
 
   const vector<string> validSections{"title",     "author", "started",
                                      "completed", "status", "notes"};
+  const vector<string> validStatuses{"reading", "completed", "tbr", "dnf"};
+
   if (find(validSections.begin(), validSections.end(), section) ==
       validSections.end()) {
     cout << "Invalid section: " << section << endl;
@@ -109,17 +107,22 @@ void modifyBook(int id, string section, string newValue, vector<Book> books) {
       } else if (section == "completed") {
         books[i].dayCompleted = newValue;
       } else if (section == "status") {
+        if (find(validStatuses.begin(), validStatuses.end(), newValue) ==
+            validStatuses.end()) {
+          cout << "Invalid status. Please enter one of the following: ";
+          for (const auto &status : validStatuses) {
+            cout << status << " ";
+          }
+          cout << endl;
+          return;
+        }
         books[i].status = newValue;
       } else if (section == "notes") {
         books[i].notes = newValue;
-      } 
-    cout << "Book with ID " << id << " has been modified." << endl;
+      }
+      cout << "Book with ID " << id << " has been modified." << endl;
     }
   }
 
-  ofstream out("books.txt", ios::trunc);
-  for (Book b : books) {
-    out << b.id << "|" << b.title << "|" << b.author << "|" << b.dayStarted
-        << "|" << b.dayCompleted << "|" << b.status << "|" << b.notes << "\n";
-  }
+  saveAllBooks(books, getenv("HOME"));
 }

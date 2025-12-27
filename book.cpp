@@ -2,6 +2,7 @@
 #include "src/commands.h"
 #include "src/database.h"
 #include <algorithm>
+#include <cstdlib>
 #include <iostream>
 #include <vector>
 
@@ -19,7 +20,10 @@ int main(int argc, char *argv[]) {
     cout << "Unknown command: " << command << endl;
     return 1;
   }
-  vector<Book> books = loadBooks();
+
+  string homeDir = getenv("HOME");
+  cout << "Using home directory: " << homeDir << endl;
+  vector<Book> books = loadBooks(homeDir);
   vector<int> ids;
   for (Book b : books) {
     ids.push_back(b.id);

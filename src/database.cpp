@@ -8,15 +8,15 @@
 
 using namespace std;
 
-void saveBook(Book b) {
-    ofstream out("books.txt", ios::app);
+void saveBook(Book b, string homeDir) {
+    ofstream out(homeDir + "/.book/books.txt", ios::app);
     out << b.id << "|" <<  b.title << "|" << b.author << "|" << b.dayStarted << "|"
         << b.dayCompleted << "|" << b.status << "|" << b.notes << "\n";
 }
 
-vector<Book> loadBooks() {
+vector<Book> loadBooks(string homeDir) {
     vector<Book> books;
-    ifstream in("books.txt");
+    ifstream in(homeDir + "/.book/books.txt");
     string line;
 
     while (getline(in, line)) {
