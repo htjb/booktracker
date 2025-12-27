@@ -1,12 +1,14 @@
 #ifndef COMMANDS_H
 #define COMMANDS_H
 
+#include "book.h"
 #include <iostream>
 #include <string>
-#include "book.h"
+#include <vector>
 
 void addBook(std::string title, int databaseLength);
 void deleteBook(int id, std::vector<Book> books);
-void list();
+void list(std::vector<Book> books);
+void showBook(int id, std::vector<Book> books);
 
-#endif 
+#endif
