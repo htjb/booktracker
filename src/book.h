@@ -10,6 +10,7 @@ struct Book {
     std::string dayStarted;
     std::string dayCompleted;
     std::string status;
+    std::string notes;
 };
 
 #endif
