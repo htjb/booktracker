@@ -1,6 +1,7 @@
 #include "src/book.h"
 #include "src/commands.h"
 #include "src/database.h"
+#include "src/version.h"
 #include <algorithm>
 #include <cstdlib>
 #include <iostream>
@@ -11,7 +12,7 @@ using namespace std;
 int main(int argc, char *argv[]) {
 
   const vector<string> allowed_commands{
-      "add", "ls", "list", "del", "delete", "mod", "modify", "help", "show"};
+      "add", "ls", "list", "del", "delete", "mod", "modify", "help", "show", "version"};
 
   string command = argv[1];
 
@@ -49,6 +50,8 @@ int main(int argc, char *argv[]) {
     cout << "Available commands: add, list (ls), delete (del), show, modify "
             "(mod), help"
          << endl;
+  } else if (command == "version") {
+    cout << "BookTracker version " << BOOKTRACKER_VERSION << endl;
   }
   return 0;
 }
