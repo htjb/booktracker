@@ -1,19 +1,22 @@
-#include <fstream>
+#include "book.h"
+#include <algorithm>
+#include <iostream>
 #include <string>
 #include <vector>
-#include "book.h"
 
 using namespace std;
 
-void saveAllBooks(const vector<Book> books, const string homeDir) {
-  /* Saves all books to the database file, overwriting existing data.
-   * Params:
-   *   books - vector of Book structs to save
-   *   homeDir - path to the user's home directory
-   */
-  ofstream out(homeDir + "/.book/books.txt", ios::trunc);
-  for (Book b : books) {
-    out << b.id << "|" << b.title << "|" << b.author << "|" << b.dayStarted
-        << "|" << b.dayCompleted << "|" << b.status << "|" << b.notes << "\n";
+void checkStatus(Book &newBook) {
+  const vector<string> validStatuses{"reading", "completed", "tbr", "dnf"};
+
+  while (find(validStatuses.begin(), validStatuses.end(), newBook.status) ==
+         validStatuses.end()) {
+    cout << "Invalid status. Please enter one of the following: ";
+    for (const auto &status : validStatuses) {
+      cout << status << " ";
+    }
+    cout << endl;
+    cout << "Status: ";
+    getline(cin, newBook.status);
   }
 }

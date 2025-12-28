@@ -2,7 +2,6 @@
 #include "database.h"
 #include "utils.h"
 #include <algorithm>
-#include <fstream>
 #include <iomanip>
 #include <iostream>
 #include <string>
@@ -12,7 +11,6 @@ using namespace std;
 
 void addBook(string title, int databaseLength) {
 
-  const vector<string> validStatuses{"reading", "completed", "tbr", "dnf"};
 
   struct Book newBook;
   newBook.title = title;
@@ -23,16 +21,7 @@ void addBook(string title, int databaseLength) {
   getline(cin, newBook.dayStarted);
   cout << "Status (e.g., reading, completed): ";
   getline(cin, newBook.status);
-  while (find(validStatuses.begin(), validStatuses.end(), newBook.status) ==
-         validStatuses.end()) {
-    cout << "Invalid status. Please enter one of the following: ";
-    for (const auto &status : validStatuses) {
-      cout << status << " ";
-    }
-    cout << endl;
-    cout << "Status: ";
-    getline(cin, newBook.status);
-  }
+  checkStatus(newBook);
   cout << "Day completed (if applicable, else leave blank): ";
   getline(cin, newBook.dayCompleted);
   cout << "Notes (if any, else leave blank): ";

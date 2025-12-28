@@ -5,6 +5,6 @@
 #include <vector>
 #include "book.h"
 
-void saveAllBooks(const std::vector<Book> books, const std::string homeDir);
+void checkStatus(Book &newBook);
 
 #endif
