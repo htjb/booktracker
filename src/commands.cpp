@@ -17,13 +17,25 @@ void addBook(string title, int databaseLength) {
   newBook.id = databaseLength + 1;
   cout << "Author: ";
   getline(cin, newBook.author);
-  cout << "Day started: ";
+  cout << "Day started (YYYY-MM-DD): ";
   getline(cin, newBook.dayStarted);
+  while (!checkDate(newBook.dayStarted)) {
+    cout << "Invalid date format. Please enter date in YYYY-MM-DD format: ";
+    getline(cin, newBook.dayStarted);
+  }
   cout << "Status (e.g., reading, completed): ";
   getline(cin, newBook.status);
   checkStatus(newBook);
-  cout << "Day completed (if applicable, else leave blank): ";
-  getline(cin, newBook.dayCompleted);
+  if (newBook.status == "completed") {
+    cout << "Day completed (YYYY-MM-DD): ";
+    getline(cin, newBook.dayCompleted);
+    while (!checkDate(newBook.dayCompleted)) {
+      cout << "Invalid date format. Please enter date in YYYY-MM-DD format: ";
+      getline(cin, newBook.dayCompleted);
+    }
+  } else {
+    newBook.dayCompleted = "";
+  }
   cout << "Notes (if any, else leave blank): ";
   getline(cin, newBook.notes);
 
@@ -93,8 +105,18 @@ void modifyBook(int id, string section, string newValue, vector<Book> books) {
         books[i].author = newValue;
       } else if (section == "started") {
         books[i].dayStarted = newValue;
+        if (!checkDate(newValue)) {
+          cout << "Invalid date format. Please enter date in YYYY-MM-DD format."
+               << endl;
+          return;
+        }
       } else if (section == "completed") {
         books[i].dayCompleted = newValue;
+        if (!checkDate(newValue)) {
+          cout << "Invalid date format. Please enter date in YYYY-MM-DD format."
+               << endl;
+          return;
+        }
       } else if (section == "status") {
         if (find(validStatuses.begin(), validStatuses.end(), newValue) ==
             validStatuses.end()) {

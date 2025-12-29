@@ -5,6 +5,6 @@
 #include "book.h"
 
 void checkStatus(Book &newBook);
-void checkdate(std::string date);
+bool checkDate(std::string date);
 
 #endif
