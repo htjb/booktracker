@@ -3,7 +3,7 @@ CXX = g++
 SRC := $(shell find . -name "*.cpp")
 OBJ := $(SRC:.cpp=.o)
 
-CXXFLAGS = -MMD -MP 
+CXXFLAGS = -MMD -MP -std=c++20
 
 TARGET = book
 

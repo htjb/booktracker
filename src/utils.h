@@ -2,9 +2,9 @@
 #define UTILS_H
 
 #include <string>
-#include <vector>
 #include "book.h"
 
 void checkStatus(Book &newBook);
+void checkdate(std::string date);
 
 #endif
