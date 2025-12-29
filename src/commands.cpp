@@ -23,10 +23,10 @@ void addBook(string title, int databaseLength) {
     cout << "Invalid date format. Please enter date in YYYY-MM-DD format: ";
     getline(cin, newBook.dayStarted);
   }
-  cout << "Status (e.g., reading, completed): ";
+  cout << "Status (reading, read, tbr, dnf): ";
   getline(cin, newBook.status);
   checkStatus(newBook);
-  if (newBook.status == "completed") {
+  if (newBook.status == "read") {
     cout << "Day completed (YYYY-MM-DD): ";
     getline(cin, newBook.dayCompleted);
     while (!checkDate(newBook.dayCompleted)) {
@@ -88,7 +88,7 @@ void modifyBook(int id, string section, string newValue, vector<Book> books) {
 
   const vector<string> validSections{"title",     "author", "started",
                                      "completed", "status", "notes"};
-  const vector<string> validStatuses{"reading", "completed", "tbr", "dnf"};
+  const vector<string> validStatuses{"reading", "read", "tbr", "dnf"};
 
   if (find(validSections.begin(), validSections.end(), section) ==
       validSections.end()) {

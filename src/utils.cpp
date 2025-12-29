@@ -11,7 +11,7 @@ using namespace std;
 using namespace std::chrono;
 
 void checkStatus(Book &newBook) {
-  const vector<string> validStatuses{"reading", "completed", "tbr", "dnf"};
+  const vector<string> validStatuses{"reading", "read", "tbr", "dnf"};
 
   while (find(validStatuses.begin(), validStatuses.end(), newBook.status) ==
          validStatuses.end()) {
