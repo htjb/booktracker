@@ -12,7 +12,7 @@ using namespace std;
 int main(int argc, char *argv[]) {
 
   const vector<string> allowed_commands{
-      "add", "ls", "list", "del", "delete", "mod", "modify", "help", "show", "version"};
+      "add", "ls", "list", "del", "delete", "mod", "modify", "help", "show", "version", "plot"};
 
   string command = argv[1];
 
@@ -52,6 +52,8 @@ int main(int argc, char *argv[]) {
          << endl;
   } else if (command == "version") {
     cout << "BookTracker version " << BOOKTRACKER_VERSION << endl;
+  } else if (command == "plot") {
+    plot();
   }
   return 0;
 }

@@ -2,6 +2,8 @@
 #include "database.h"
 #include "utils.h"
 #include <algorithm>
+#include <chrono>
+#include <cstdio>
 #include <iomanip>
 #include <iostream>
 #include <string>
@@ -10,7 +12,6 @@
 using namespace std;
 
 void addBook(string title, int databaseLength) {
-
 
   struct Book newBook;
   newBook.title = title;
@@ -38,6 +39,11 @@ void addBook(string title, int databaseLength) {
   }
   cout << "Notes (if any, else leave blank): ";
   getline(cin, newBook.notes);
+
+  auto time = chrono::system_clock::to_time_t(chrono::system_clock::now());
+  stringstream ss;
+  ss << put_time(localtime(&time), "%Y-%m-%d");
+  newBook.dayAdded = ss.str();
 
   cout << "Added book: " << newBook.title << endl;
 
@@ -76,6 +82,7 @@ void showBook(int id, vector<Book> books) {
       cout << left << setw(15) << "Author: " << b.author << endl;
       cout << left << setw(15) << "Day Started: " << b.dayStarted << endl;
       cout << left << setw(15) << "Day Completed: " << b.dayCompleted << endl;
+      cout << left << setw(15) << "Day Added: " << b.dayAdded << endl;
       cout << left << setw(15) << "Status: " << b.status << endl;
       cout << left << setw(15) << "Notes: " << b.notes << endl;
       return;
@@ -136,4 +143,42 @@ void modifyBook(int id, string section, string newValue, vector<Book> books) {
   }
 
   saveAllBooks(books, getenv("HOME"));
+}
+
+void plot() {
+  auto time = chrono::system_clock::to_time_t(chrono::system_clock::now());
+  stringstream ss;
+  ss << put_time(localtime(&time), "%Y");
+  string year = ss.str();
+
+  vector<string> validStatus{"reading", "read", "tbr", "dnf"};
+
+  vector<string> months{"01", "02", "03", "04", "05", "06",
+                        "07", "08", "09", "10", "11", "12"};
+
+  vector<vector<int>> counts;
+
+  for (int i = 0; i < months.size(); i++) {
+    vector<int> month_counts;
+    for (int j = 0; j < validStatus.size(); j++) {
+      int c =
+          filterDateStatus(getenv("HOME"), year + months[i], validStatus[j]);
+      month_counts.push_back(c);
+    }
+    counts.push_back(month_counts);
+  }
+
+  FILE *gp = popen("gnuplot -persistent", "w");
+
+  fprintf(gp, "set terminal dumb 80 25\n");
+  fprintf(gp, "plot '-' with points\n");
+
+  for (int j = 0; j < validStatus.size(); ++j) {
+    for (int i = 0; i < months.size(); ++i) {
+      fprintf(gp, "%f %f\n", i + 1, counts[i][j]);
+    }
+    fprintf(gp, "e\n");
+  }
+
+  pclose(gp);
 }

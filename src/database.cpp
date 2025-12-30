@@ -11,7 +11,7 @@ using namespace std;
 void saveBook(Book b, string homeDir) {
     ofstream out(homeDir + "/.book/books.txt", ios::app);
     out << b.id << "|" <<  b.title << "|" << b.author << "|" << b.dayStarted << "|"
-        << b.dayCompleted << "|" << b.status << "|" << b.notes << "\n";
+        << b.dayCompleted << "|" << b.dayAdded << "|" << b.status << "|" << b.notes << "\n";
 }
 
 vector<Book> loadBooks(string homeDir) {
@@ -31,6 +31,7 @@ vector<Book> loadBooks(string homeDir) {
         getline(ss, b.author, '|');
         getline(ss, b.dayStarted, '|');
         getline(ss, b.dayCompleted, '|');
+        getline(ss, b.dayAdded, '|');
         getline(ss, b.status, '|');
         getline(ss, b.notes, '|');
         books.push_back(b);
@@ -47,6 +48,6 @@ void saveAllBooks(const vector<Book> books, const string homeDir) {
   ofstream out(homeDir + "/.book/books.txt", ios::trunc);
   for (Book b : books) {
     out << b.id << "|" << b.title << "|" << b.author << "|" << b.dayStarted
-        << "|" << b.dayCompleted << "|" << b.status << "|" << b.notes << "\n";
+        << "|" << b.dayCompleted << "|" << b.dayAdded << "|" << b.status << "|" << b.notes << "\n";
   }
 }
