@@ -6,5 +6,6 @@
 
 void checkStatus(Book &newBook);
 bool checkDate(std::string date);
+int filterDateStatus(std::string homeDir, std::string date, std::string status);
 
 #endif

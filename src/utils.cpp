@@ -4,6 +4,7 @@
 #include <iomanip>
 #include <string>
 #include <vector>
+#include <fstream>
 #include <sstream>
 #include <chrono>
 
@@ -34,4 +35,18 @@ bool checkDate(string date){
     }
     return ymd.ok();
 }
+
+int filterDateStatus(string homeDir, string date, string status){
+    ifstream in(homeDir + "/.book/books.txt");
+    string line;
     
+    int count = 0;
+    while (getline(in, line)) {
+        if (line.find(date) != npos &&
+            line.find(status) != npos) {
+            count += 1;
+        }
+    }
+
+    return count;
+}
