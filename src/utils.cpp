@@ -42,8 +42,8 @@ int filterDateStatus(string homeDir, string date, string status){
     
     int count = 0;
     while (getline(in, line)) {
-        if (line.find(date) != npos &&
-            line.find(status) != npos) {
+        if (line.find(date) != string::npos &&
+            line.find(status) != string::npos) {
             count += 1;
         }
     }
