@@ -47,6 +47,18 @@ book mod <ID> <section> "New value"
 
 where section can be any of "title", "author", "started", "completed", "status" and "notes".
 
+You can see a plot of your reading history by running
+
+```bash
+book plot
+```
+
+and see the version of the program with
+
+```bash
+book version
+```
+
 There is a `help` function which can be accessed with
 
 ```bash

@@ -48,7 +48,7 @@ int main(int argc, char *argv[]) {
     modifyBook(id, argv[3], argv[4], books);
   } else if (command == "help") {
     cout << "Available commands: add, list (ls), delete (del), show, modify "
-            "(mod), help"
+            "(mod), help, version, plot"
          << endl;
   } else if (command == "version") {
     cout << "BookTracker version " << BOOKTRACKER_VERSION << endl;
