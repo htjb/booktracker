@@ -72,4 +72,3 @@ but it currently isn't very helpful! The best thing to do is to refer to this RE
 A roadmap is probably a bit too grand a term for a small project like this but ultimately I would like to 
 
 - add a stats command that shows users how many books they have on their tbr, how many they have read this year etc.
-- add some graphs showing how many books have been read in the last 12 months. Similar to taskwarrior's burndown graphs.
