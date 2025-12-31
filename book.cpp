@@ -53,7 +53,7 @@ int main(int argc, char *argv[]) {
   } else if (command == "version") {
     cout << "BookTracker version " << BOOKTRACKER_VERSION << endl;
   } else if (command == "plot") {
-    plot();
+    plot(books);
   }
   return 0;
 }

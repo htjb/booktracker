@@ -6,6 +6,7 @@
 #include <cstdio>
 #include <iomanip>
 #include <iostream>
+#include <numeric>
 #include <string>
 #include <vector>
 
@@ -20,7 +21,7 @@ void addBook(string title, int databaseLength) {
   getline(cin, newBook.author);
   cout << "Day started (YYYY-MM-DD): ";
   getline(cin, newBook.dayStarted);
-  while (!checkDate(newBook.dayStarted)) {
+  while (!checkDate(newBook.dayStarted) && newBook.dayStarted != "") {
     cout << "Invalid date format. Please enter date in YYYY-MM-DD format: ";
     getline(cin, newBook.dayStarted);
   }
@@ -30,7 +31,7 @@ void addBook(string title, int databaseLength) {
   if (newBook.status == "read") {
     cout << "Day completed (YYYY-MM-DD): ";
     getline(cin, newBook.dayCompleted);
-    while (!checkDate(newBook.dayCompleted)) {
+    while (!checkDate(newBook.dayCompleted) && newBook.dayCompleted != "") {
       cout << "Invalid date format. Please enter date in YYYY-MM-DD format: ";
       getline(cin, newBook.dayCompleted);
     }
@@ -68,9 +69,9 @@ void list(vector<Book> books) {
   cout << string(89, '-') << '\n';
 
   for (const auto &b : books) {
-    cout << left << setw(4) << b.id << setw(25) << b.title << setw(20)
-         << b.author << setw(14) << b.dayStarted << setw(16) << b.dayCompleted
-         << setw(10) << b.status << '\n';
+    cout << left << setw(4) << b.id << setw(25) << fit(b.title, 25) << setw(20)
+         << fit(b.author, 20) << setw(14) << fit(b.dayStarted, 14) << setw(16)
+         << fit(b.dayCompleted, 16) << setw(10) << fit(b.status, 10) << '\n';
   }
 }
 
@@ -112,14 +113,14 @@ void modifyBook(int id, string section, string newValue, vector<Book> books) {
         books[i].author = newValue;
       } else if (section == "started") {
         books[i].dayStarted = newValue;
-        if (!checkDate(newValue)) {
+        if (!checkDate(newValue) && newValue != "") {
           cout << "Invalid date format. Please enter date in YYYY-MM-DD format."
                << endl;
           return;
         }
       } else if (section == "completed") {
         books[i].dayCompleted = newValue;
-        if (!checkDate(newValue)) {
+        if (!checkDate(newValue) && newValue != "") {
           cout << "Invalid date format. Please enter date in YYYY-MM-DD format."
                << endl;
           return;
@@ -145,40 +146,79 @@ void modifyBook(int id, string section, string newValue, vector<Book> books) {
   saveAllBooks(books, getenv("HOME"));
 }
 
-void plot() {
-  auto time = chrono::system_clock::to_time_t(chrono::system_clock::now());
-  stringstream ss;
-  ss << put_time(localtime(&time), "%Y");
-  string year = ss.str();
+void plot_stacked_bars(const vector<vector<int>> &counts,
+                       const vector<string> &months,
+                       const vector<string> &statuses) {
+  int max_total = 0;
 
+  for (const auto &month_counts : counts)
+    max_total =
+        max(max_total, accumulate(month_counts.begin(), month_counts.end(), 0));
+
+  if (max_total == 0) {
+    cout << "No books finished this year!" << endl;
+    return;
+  }
+
+  cout << "\nStacked Bar Chart of Books Completed per Month\n";
+
+  int height = max_total * 2; // vertical resolution
+
+  // Print chart from top to bottom
+  for (int h = height; h >= 1; --h) {
+
+    float yval = h * max_total / float(height);
+    printf("%.1f |", yval);
+    for (int i = 0; i < counts.size(); ++i) {
+      int sum = 0;
+      for (int j = 0; j < counts[i].size(); ++j)
+        sum += counts[i][j];
+      int level = sum * height / max_total;
+      if (level >= h)
+        cout << "██";
+      else
+        cout << "   ";
+    }
+    cout << " " << endl;
+  }
+
+  // Print X-axis
+  cout << "     ";
+  for (int i = 0; i < counts.size(); ++i) {
+    cout << "---";
+  }
+  cout << endl;
+
+  // Print month labels
+  cout << "      ";
+  for (int i = 0; i < months.size(); ++i) {
+    cout << months[i] << " ";
+  }
+  cout << endl;
+
+  cout << "                     " << "Month" << endl;
+}
+
+// Usage
+void plot(vector<Book> books) {
   vector<string> validStatus{"reading", "read", "tbr", "dnf"};
-
   vector<string> months{"01", "02", "03", "04", "05", "06",
                         "07", "08", "09", "10", "11", "12"};
 
   vector<vector<int>> counts;
+  auto now = chrono::system_clock::to_time_t(chrono::system_clock::now());
+  stringstream ss;
+  ss << put_time(localtime(&now), "%Y");
+  string year = ss.str();
 
-  for (int i = 0; i < months.size(); i++) {
+  for (const auto &month : months) {
     vector<int> month_counts;
-    for (int j = 0; j < validStatus.size(); j++) {
-      int c =
-          filterDateStatus(getenv("HOME"), year + months[i], validStatus[j]);
+    for (const auto &status : validStatus) {
+      int c = filterDateStatus(books, year + "-" + month, status);
       month_counts.push_back(c);
     }
     counts.push_back(month_counts);
   }
 
-  FILE *gp = popen("gnuplot -persistent", "w");
-
-  fprintf(gp, "set terminal dumb 80 25\n");
-  fprintf(gp, "plot '-' with points\n");
-
-  for (int j = 0; j < validStatus.size(); ++j) {
-    for (int i = 0; i < months.size(); ++i) {
-      fprintf(gp, "%f %f\n", i + 1, counts[i][j]);
-    }
-    fprintf(gp, "e\n");
-  }
-
-  pclose(gp);
+  plot_stacked_bars(counts, months, validStatus);
 }

@@ -36,17 +36,20 @@ bool checkDate(string date){
     return ymd.ok();
 }
 
-int filterDateStatus(string homeDir, string date, string status){
-    ifstream in(homeDir + "/.book/books.txt");
-    string line;
-    
+int filterDateStatus(vector<Book> books, string date, string status){
+
     int count = 0;
-    while (getline(in, line)) {
-        if (line.find(date) != string::npos &&
-            line.find(status) != string::npos) {
+    for (const auto& book : books) {
+        if (book.dayCompleted.find(date) != string::npos &&
+            book.status == status) {
             count += 1;
         }
     }
 
     return count;
+}
+
+string fit(const string& s, size_t w) {
+  if (s.size() <= w) return s;
+  return s.substr(0, w - 1) + "…";
 }
