@@ -47,6 +47,18 @@ book mod <ID> <section> "New value"
 
 where section can be any of "title", "author", "started", "completed", "status" and "notes".
 
+You can see a plot of your reading history by running
+
+```bash
+book plot
+```
+
+and see the version of the program with
+
+```bash
+book version
+```
+
 There is a `help` function which can be accessed with
 
 ```bash
@@ -60,4 +72,3 @@ but it currently isn't very helpful! The best thing to do is to refer to this RE
 A roadmap is probably a bit too grand a term for a small project like this but ultimately I would like to 
 
 - add a stats command that shows users how many books they have on their tbr, how many they have read this year etc.
-- add some graphs showing how many books have been read in the last 12 months. Similar to taskwarrior's burndown graphs.
