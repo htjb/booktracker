@@ -62,16 +62,32 @@ void deleteBook(int id, vector<Book> books) {
 }
 
 void list(vector<Book> books) {
-  cout << left << setw(4) << "ID" << setw(25) << "Title" << setw(20) << "Author"
-       << setw(14) << "Started" << setw(16) << "Completed" << setw(10)
-       << "Status" << '\n';
 
-  cout << string(89, '-') << '\n';
+  int termWidth = terminalWidth();
 
-  for (const auto &b : books) {
-    cout << left << setw(4) << b.id << setw(25) << fit(b.title, 25) << setw(20)
-         << fit(b.author, 20) << setw(14) << fit(b.dayStarted, 14) << setw(16)
-         << fit(b.dayCompleted, 16) << setw(10) << fit(b.status, 10) << '\n';
+  if (termWidth < 50) {
+    cout << left << setw(4) << "ID" << setw(20) << "Title" << setw(15)
+         << "Author" << '\n';
+
+    for (Book b : books) {
+      cout << left << setw(4) << b.id << setw(20) << fit(b.title, 20)
+           << setw(15) << fit(b.author, 15) << '\n';
+    }
+  } else {
+
+      float colWidth = float(termWidth) / 100;
+
+      cout << left << setw(4*colWidth) << "ID" << setw(25*colWidth) << "Title" << setw(20*colWidth) << "Author"
+           << setw(14*colWidth) << "Started" << setw(16*colWidth) << "Completed" << setw(10*colWidth)
+           << "Status" << '\n';
+
+      cout << string(colWidth*89, '-') << '\n';
+
+      for (Book b : books) {
+        cout << left << setw(4*colWidth) << b.id << setw(25*colWidth) << fit(b.title, 25*colWidth) << setw(20*colWidth)
+             << fit(b.author, 20*colWidth) << setw(14*colWidth) << fit(b.dayStarted, 14*colWidth) << setw(16*colWidth)
+             << fit(b.dayCompleted, 16*colWidth) << setw(10*colWidth) << fit(b.status, 10*colWidth) << '\n';
+      }
   }
 }
 
