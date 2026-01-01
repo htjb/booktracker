@@ -1,4 +1,6 @@
-// save and load functions for the database
+/* Save and load functions for the database *
+ * Author: Harry Bevins
+ */
 
 #include "book.h"
 #include <fstream>
@@ -9,6 +11,12 @@
 using namespace std;
 
 void saveBook(Book b, string homeDir) {
+    /* Saves a single book to the database file.
+     *
+     * Params:
+     *   b - Book struct to save
+     *   homeDir - path to the user's home directory
+     */
   ofstream out(homeDir + "/.book/books.txt", ios::app);
   out << b.id << "|" << b.title << "|" << b.author << "|" << b.dayStarted << "|"
       << b.dayCompleted << "|" << b.dayAdded << "|" << b.status << "|"
@@ -16,6 +24,13 @@ void saveBook(Book b, string homeDir) {
 }
 
 vector<Book> loadBooks(string homeDir) {
+  /* Loads all books from the database file.
+   *
+   * Params:
+   *   homeDir - path to the user's home directory
+   * Returns:
+   *   vector of Book structs representing all books in the database
+   */
   vector<Book> books;
   ifstream in(homeDir + "/.book/books.txt");
   string line;
@@ -41,7 +56,7 @@ vector<Book> loadBooks(string homeDir) {
   return books;
 }
 
-void saveAllBooks(const vector<Book> books, const string homeDir) {
+void saveAllBooks(const vector<Book> &books, const string homeDir) {
   /* Saves all books to the database file, overwriting existing data.
    * Params:
    *   books - vector of Book structs to save
