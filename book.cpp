@@ -1,9 +1,14 @@
+/* Main file for BookTracker CLI application.
+ * Handles command-line argument parsing and command execution.
+ *
+ * Author: Harry Bevins
+ */
 #include "src/book.h"
 #include "src/commands.h"
 #include "src/database.h"
-#include "src/version.h"
 #include "src/plot.h"
 #include "src/stats.h"
+#include "src/version.h"
 #include <algorithm>
 #include <cstdlib>
 #include <iostream>
@@ -12,9 +17,16 @@
 using namespace std;
 
 int main(int argc, char *argv[]) {
+  /* Main function for BookTracker CLI application.
+   * Parses command-line arguments and executes corresponding commands.
+   * Params:
+   *   argc - number of command-line arguments
+   *   argv - array of command-line argument strings
+   */
 
-  const vector<string> allowed_commands{
-      "add", "ls", "list", "del", "delete", "mod", "modify", "help", "show", "version", "plot", "stats"};
+  const vector<string> allowed_commands{"add",    "ls",      "list",   "del",
+                                        "delete", "mod",     "modify", "help",
+                                        "show",   "version", "plot",   "stats"};
 
   string command = argv[1];
 
@@ -25,15 +37,14 @@ int main(int argc, char *argv[]) {
   }
 
   string homeDir = getenv("HOME");
- 
+
   vector<Book> books = loadBooks(homeDir);
   vector<int> ids;
   for (Book b : books) {
     ids.push_back(b.id);
   }
 
-  int maxId =
-      ids.size() > 0 ? *max_element(ids.begin(), ids.end()) : 0;
+  int maxId = ids.size() > 0 ? *max_element(ids.begin(), ids.end()) : 0;
 
   if (command == "add") {
     addBook(argv[2], maxId);
