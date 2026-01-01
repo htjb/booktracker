@@ -2,6 +2,7 @@
 #include "src/commands.h"
 #include "src/database.h"
 #include "src/version.h"
+#include "src/plot.h"
 #include <algorithm>
 #include <cstdlib>
 #include <iostream>
