@@ -1,5 +1,5 @@
-#ifndef COMMANDS_H
-#define COMMANDS_H
+#ifndef PLOT_H
+#define PLOT_H
 
 #include "book.h"
 #include <iostream>
