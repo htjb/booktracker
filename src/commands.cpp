@@ -11,21 +11,39 @@
 using namespace std;
 
 void addBook(string title, int databaseLength) {
+  /* Function to add a new book to the database.
+   * Params:
+   *   title - title of the book to add
+   *   databaseLength - current number of books in the database
+   */
 
+  // Create new Book struct
   struct Book newBook;
   newBook.title = title;
   newBook.id = databaseLength + 1;
+
+  // Input author
   cout << "Author: ";
   getline(cin, newBook.author);
-  cout << "Day started (YYYY-MM-DD): ";
-  getline(cin, newBook.dayStarted);
-  while (!checkDate(newBook.dayStarted) && newBook.dayStarted != "") {
-    cout << "Invalid date format. Please enter date in YYYY-MM-DD format: ";
-    getline(cin, newBook.dayStarted);
-  }
+
+  // Input status with validation
   cout << "Status (reading, read, tbr, dnf): ";
   getline(cin, newBook.status);
   checkStatus(newBook);
+
+  // Input start date with validation
+  if (newBook.status != "tbr") {
+    cout << "Day started (YYYY-MM-DD): ";
+    getline(cin, newBook.dayStarted);
+    while (!checkDate(newBook.dayStarted) && newBook.dayStarted != "") {
+      cout << "Invalid date format. Please enter date in YYYY-MM-DD format: ";
+      getline(cin, newBook.dayStarted);
+    }
+  } else {
+    newBook.dayStarted = "";
+  }
+
+  // Input completion date and rating if status is "read"
   if (newBook.status == "read") {
     cout << "Day completed (YYYY-MM-DD): ";
     getline(cin, newBook.dayCompleted);
@@ -40,9 +58,12 @@ void addBook(string title, int databaseLength) {
     newBook.dayCompleted = "";
     newBook.rating = "";
   }
+
+  // Input notes
   cout << "Notes (if any, else leave blank): ";
   getline(cin, newBook.notes);
 
+  // Set dayAdded to current date
   auto time = chrono::system_clock::to_time_t(chrono::system_clock::now());
   stringstream ss;
   ss << put_time(localtime(&time), "%Y-%m-%d");
@@ -50,6 +71,7 @@ void addBook(string title, int databaseLength) {
 
   cout << "Added book: " << newBook.title << endl;
 
+  // Save new book to database
   saveBook(newBook, getenv("HOME"));
 }
 
@@ -128,8 +150,8 @@ void showBook(int id, vector<Book> books) {
 
 void modifyBook(int id, string section, string newValue, vector<Book> books) {
 
-  const vector<string> validSections{"title",     "author", "started",
-                                     "completed", "status", "rating", "notes"};
+  const vector<string> validSections{"title",  "author", "started", "completed",
+                                     "status", "rating", "notes"};
   const vector<string> validStatuses{"reading", "read", "tbr", "dnf"};
 
   if (find(validSections.begin(), validSections.end(), section) ==
@@ -177,7 +199,8 @@ void modifyBook(int id, string section, string newValue, vector<Book> books) {
         const vector<string> validRatings{"1", "2", "3", "4", "5", ""};
         if (find(validRatings.begin(), validRatings.end(), newValue) ==
             validRatings.end()) {
-          cout << "Invalid rating. Please enter a rating between 1 and 5, or leave blank."
+          cout << "Invalid rating. Please enter a rating between 1 and 5, or "
+                  "leave blank."
                << endl;
           return;
         }
