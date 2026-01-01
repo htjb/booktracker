@@ -1,3 +1,9 @@
+/* Functions to handle book database commands such as add, delete, list,
+ * show, and modify.
+ *
+ * Authors: Harry Bevins
+ *
+ */
 #include "book.h"
 #include "database.h"
 #include "utils.h"
@@ -75,7 +81,12 @@ void addBook(string title, int databaseLength) {
   saveBook(newBook, getenv("HOME"));
 }
 
-void deleteBook(int id, vector<Book> books) {
+void deleteBook(int id, vector<Book> &books) {
+  /* Function to delete a book from the database by ID.
+   * Params:
+   *  id - ID of the book to delete
+   *  books - vector of Book structs representing the collection
+   */
   for (int i = 0; i < books.size(); i++) {
     if (books[i].id == id) {
       books.erase(books.begin() + i);
@@ -85,7 +96,11 @@ void deleteBook(int id, vector<Book> books) {
   saveAllBooks(books, getenv("HOME"));
 }
 
-void list(vector<Book> books) {
+void list(vector<Book> &books) {
+  /* Function to list all books in the database in a formatted table.
+   * Params:
+   *  books - vector of Book structs representing the collection
+   */
 
   int termWidth = terminalWidth();
   float colWidth = float(termWidth) / 100;
@@ -119,7 +134,12 @@ void list(vector<Book> books) {
   }
 }
 
-void showBook(int id, vector<Book> books) {
+void showBook(int id, vector<Book> &books) {
+  /* Function to display detailed information about a specific book.
+   * Params:
+   *  id - ID of the book to display
+   *  books - vector of Book structs representing the collection
+   */
 
   int termWidth = terminalWidth();
 
@@ -148,7 +168,14 @@ void showBook(int id, vector<Book> books) {
   cout << "Book with ID " << id << " not found." << endl;
 }
 
-void modifyBook(int id, string section, string newValue, vector<Book> books) {
+void modifyBook(int id, string section, string newValue, vector<Book> &books) {
+  /* Function to modify a specific section of a book's details.
+   * Params:
+   *  id - ID of the book to modify
+   *  section - section of the book to modify (e.g., "title", "author", etc.)
+   *  newValue - new value to set for the specified section
+   *  books - vector of Book structs representing the collection
+   */
 
   const vector<string> validSections{"title",  "author", "started", "completed",
                                      "status", "rating", "notes"};
