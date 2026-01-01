@@ -52,8 +52,13 @@ You can see a plot of your reading history by running
 ```bash
 book plot
 ```
+and see statistics about your reading habits by running
 
-and see the version of the program with
+```bash
+book stats
+```
+
+Finally you can see the version of the program with
 
 ```bash
 book version
