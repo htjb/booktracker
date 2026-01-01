@@ -33,8 +33,12 @@ void addBook(string title, int databaseLength) {
       cout << "Invalid date format. Please enter date in YYYY-MM-DD format: ";
       getline(cin, newBook.dayCompleted);
     }
+    cout << "Rating (1-5, optional): ";
+    getline(cin, newBook.rating);
+    checkRating(newBook);
   } else {
     newBook.dayCompleted = "";
+    newBook.rating = "";
   }
   cout << "Notes (if any, else leave blank): ";
   getline(cin, newBook.notes);
@@ -113,6 +117,8 @@ void showBook(int id, vector<Book> books) {
            << endl;
       cout << left << setw(15) << "Status: " << fit(b.status, maxLength)
            << endl;
+      cout << left << setw(15) << "Rating: " << fit(b.rating, maxLength)
+           << endl;
       cout << left << setw(15) << "Notes: " << fit(b.notes, maxLength) << endl;
       return;
     }
@@ -123,7 +129,7 @@ void showBook(int id, vector<Book> books) {
 void modifyBook(int id, string section, string newValue, vector<Book> books) {
 
   const vector<string> validSections{"title",     "author", "started",
-                                     "completed", "status", "notes"};
+                                     "completed", "status", "rating", "notes"};
   const vector<string> validStatuses{"reading", "read", "tbr", "dnf"};
 
   if (find(validSections.begin(), validSections.end(), section) ==
@@ -166,6 +172,15 @@ void modifyBook(int id, string section, string newValue, vector<Book> books) {
         books[i].status = newValue;
       } else if (section == "notes") {
         books[i].notes = newValue;
+      } else if (section == "rating") {
+        books[i].rating = newValue;
+        const vector<string> validRatings{"1", "2", "3", "4", "5", ""};
+        if (find(validRatings.begin(), validRatings.end(), newValue) ==
+            validRatings.end()) {
+          cout << "Invalid rating. Please enter a rating between 1 and 5, or leave blank."
+               << endl;
+          return;
+        }
       }
       cout << "Book with ID " << id << " has been modified." << endl;
     }
@@ -173,4 +188,3 @@ void modifyBook(int id, string section, string newValue, vector<Book> books) {
 
   saveAllBooks(books, getenv("HOME"));
 }
-

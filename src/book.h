@@ -11,6 +11,7 @@ struct Book {
     std::string dayCompleted;
     std::string dayAdded;
     std::string status;
+    std::string rating;
     std::string notes;
 };
 

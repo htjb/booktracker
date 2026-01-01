@@ -26,6 +26,19 @@ void checkStatus(Book &newBook) {
   }
 }
 
+void checkRating(Book &newBook) {
+    /* Function to validate book rating input 
+     * Params:
+     *  newBook - reference to Book struct to validate rating for
+     * */
+    const vector<string> validRatings{"1", "2", "3", "4", "5", ""};
+    while (find(validRatings.begin(), validRatings.end(), newBook.rating) ==
+           validRatings.end()) {
+      cout << "Invalid rating. Please enter a rating between 1 and 5, or leave blank: ";
+      getline(cin, newBook.rating);
+    }
+}
+
 bool checkDate(string date) {
   istringstream iss(date);
   year_month_day ymd;
