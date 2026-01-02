@@ -142,7 +142,6 @@ void showBook(int id, vector<Book> &books) {
    */
 
   int termWidth = terminalWidth();
-
   int maxLength = termWidth - 20;
 
   for (Book b : books) {
@@ -161,7 +160,11 @@ void showBook(int id, vector<Book> &books) {
            << endl;
       cout << left << setw(15) << "Rating: " << fit(b.rating, maxLength)
            << endl;
-      cout << left << setw(15) << "Notes: " << fit(b.notes, maxLength) << endl;
+      auto wrappedNotes = wrapText(b.notes, maxLength);
+      cout << left << setw(15) << "Notes: " << wrappedNotes[0] << endl;
+      for (size_t i = 1; i < wrappedNotes.size(); ++i) {
+        cout << setw(15) << " " << wrappedNotes[i] << endl;
+      }
       return;
     }
   }
