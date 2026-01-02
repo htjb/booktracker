@@ -160,10 +160,17 @@ void showBook(int id, vector<Book> &books) {
            << endl;
       cout << left << setw(15) << "Rating: " << fit(b.rating, maxLength)
            << endl;
-      auto wrappedNotes = wrapText(b.notes, maxLength);
-      cout << left << setw(15) << "Notes: " << wrappedNotes[0] << endl;
-      for (size_t i = 1; i < wrappedNotes.size(); ++i) {
-        cout << setw(15) << " " << wrappedNotes[i] << endl;
+
+      // nicely formatted output for the notes
+      cout << left << setw(15) << "Notes: ";
+      if (b.notes != "") {
+        auto wrappedNotes = wrapText(b.notes, maxLength);
+        cout << wrappedNotes[0] << endl;
+        for (size_t i = 1; i < wrappedNotes.size(); ++i) {
+          cout << setw(15) << " " << wrappedNotes[i] << endl;
+        }
+      } else {
+        cout << endl;
       }
       return;
     }
