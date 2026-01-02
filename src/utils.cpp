@@ -27,16 +27,17 @@ void checkStatus(Book &newBook) {
 }
 
 void checkRating(Book &newBook) {
-    /* Function to validate book rating input 
-     * Params:
-     *  newBook - reference to Book struct to validate rating for
-     * */
-    const vector<string> validRatings{"1", "2", "3", "4", "5", ""};
-    while (find(validRatings.begin(), validRatings.end(), newBook.rating) ==
-           validRatings.end()) {
-      cout << "Invalid rating. Please enter a rating between 1 and 5, or leave blank: ";
-      getline(cin, newBook.rating);
-    }
+  /* Function to validate book rating input
+   * Params:
+   *  newBook - reference to Book struct to validate rating for
+   * */
+  const vector<string> validRatings{"1", "2", "3", "4", "5", ""};
+  while (find(validRatings.begin(), validRatings.end(), newBook.rating) ==
+         validRatings.end()) {
+    cout << "Invalid rating. Please enter a rating between 1 and 5, or leave "
+            "blank: ";
+    getline(cin, newBook.rating);
+  }
 }
 
 bool checkDate(string date) {
@@ -71,4 +72,31 @@ int terminalWidth() {
   winsize w{};
   ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
   return w.ws_col;
+}
+
+vector<string> wrapText(const string &text, int width) {
+  /* Function to wrap text to a specified width.
+   * Params:
+   *  text - input string to wrap
+   *  width - maximum width of each line
+   * Returns:
+   *  vector of strings, each representing a line of wrapped text
+   */
+  istringstream words(text);
+  vector<string> lines;
+  string word, line;
+
+  while (words >> word) {
+    if (line.size() + word.size() + 1 > width) {
+      lines.push_back(line);
+      line = word;
+    } else {
+      if (!line.empty())
+        line += " ";
+      line += word;
+    }
+  }
+  if (!line.empty())
+    lines.push_back(line);
+  return lines;
 }
