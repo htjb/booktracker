@@ -9,6 +9,7 @@
 #include "src/plot.h"
 #include "src/stats.h"
 #include "src/version.h"
+#include "src/help.h"
 #include <algorithm>
 #include <cstdlib>
 #include <iostream>
@@ -60,9 +61,7 @@ int main(int argc, char *argv[]) {
     int id = stoi(argv[2]);
     modifyBook(id, argv[3], argv[4], books);
   } else if (command == "help") {
-    cout << "Available commands: add, list (ls), delete (del), show, modify "
-            "(mod), help, version, plot, stats"
-         << endl;
+    displayHelp();
   } else if (command == "version") {
     cout << "BookTracker version " << BOOKTRACKER_VERSION << endl;
   } else if (command == "plot") {
