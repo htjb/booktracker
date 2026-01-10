@@ -52,8 +52,13 @@ You can see a plot of your reading history by running
 ```bash
 book plot
 ```
+and see statistics about your reading habits by running
 
-and see the version of the program with
+```bash
+book stats
+```
+
+Finally you can see the version of the program with
 
 ```bash
 book version
@@ -71,6 +76,5 @@ but it currently isn't very helpful! The best thing to do is to refer to this RE
 
 A roadmap is probably a bit too grand a term for a small project like this but ultimately I would like to 
 
-- add a stats command that shows users how many books they have on their tbr, how many they have read this year etc.
 - add some comments to the functions and code
 - add a version control workflow

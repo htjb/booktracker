@@ -1,7 +1,15 @@
+/* Main file for BookTracker CLI application.
+ * Handles command-line argument parsing and command execution.
+ *
+ * Author: Harry Bevins
+ */
 #include "src/book.h"
 #include "src/commands.h"
 #include "src/database.h"
+#include "src/plot.h"
+#include "src/stats.h"
 #include "src/version.h"
+#include "src/help.h"
 #include <algorithm>
 #include <cstdlib>
 #include <iostream>
@@ -10,9 +18,16 @@
 using namespace std;
 
 int main(int argc, char *argv[]) {
+  /* Main function for BookTracker CLI application.
+   * Parses command-line arguments and executes corresponding commands.
+   * Params:
+   *   argc - number of command-line arguments
+   *   argv - array of command-line argument strings
+   */
 
-  const vector<string> allowed_commands{
-      "add", "ls", "list", "del", "delete", "mod", "modify", "help", "show", "version", "plot"};
+  const vector<string> allowed_commands{"add",    "ls",      "list",   "del",
+                                        "delete", "mod",     "modify", "help",
+                                        "show",   "version", "plot",   "stats"};
 
   string command = argv[1];
 
@@ -23,15 +38,14 @@ int main(int argc, char *argv[]) {
   }
 
   string homeDir = getenv("HOME");
- 
+
   vector<Book> books = loadBooks(homeDir);
   vector<int> ids;
   for (Book b : books) {
     ids.push_back(b.id);
   }
 
-  int maxId =
-      ids.size() > 0 ? *max_element(ids.begin(), ids.end()) : 0;
+  int maxId = ids.size() > 0 ? *max_element(ids.begin(), ids.end()) : 0;
 
   if (command == "add") {
     addBook(argv[2], maxId);
@@ -47,13 +61,13 @@ int main(int argc, char *argv[]) {
     int id = stoi(argv[2]);
     modifyBook(id, argv[3], argv[4], books);
   } else if (command == "help") {
-    cout << "Available commands: add, list (ls), delete (del), show, modify "
-            "(mod), help, version, plot"
-         << endl;
+    displayHelp();
   } else if (command == "version") {
     cout << "BookTracker version " << BOOKTRACKER_VERSION << endl;
   } else if (command == "plot") {
     plot(books);
+  } else if (command == "stats") {
+    stats(books);
   }
   return 0;
 }

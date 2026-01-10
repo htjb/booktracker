@@ -1,33 +1,55 @@
+/* Functions to handle book database commands such as add, delete, list,
+ * show, and modify.
+ *
+ * Authors: Harry Bevins
+ *
+ */
 #include "book.h"
 #include "database.h"
 #include "utils.h"
 #include <algorithm>
 #include <chrono>
-#include <cstdio>
 #include <iomanip>
 #include <iostream>
-#include <numeric>
 #include <string>
 #include <vector>
 
 using namespace std;
 
 void addBook(string title, int databaseLength) {
+  /* Function to add a new book to the database.
+   * Params:
+   *   title - title of the book to add
+   *   databaseLength - current number of books in the database
+   */
 
+  // Create new Book struct
   struct Book newBook;
   newBook.title = title;
   newBook.id = databaseLength + 1;
+
+  // Input author
   cout << "Author: ";
   getline(cin, newBook.author);
-  cout << "Day started (YYYY-MM-DD): ";
-  getline(cin, newBook.dayStarted);
-  while (!checkDate(newBook.dayStarted) && newBook.dayStarted != "") {
-    cout << "Invalid date format. Please enter date in YYYY-MM-DD format: ";
-    getline(cin, newBook.dayStarted);
-  }
+
+  // Input status with validation
   cout << "Status (reading, read, tbr, dnf): ";
   getline(cin, newBook.status);
   checkStatus(newBook);
+
+  // Input start date with validation
+  if (newBook.status != "tbr") {
+    cout << "Day started (YYYY-MM-DD): ";
+    getline(cin, newBook.dayStarted);
+    while (!checkDate(newBook.dayStarted) && newBook.dayStarted != "") {
+      cout << "Invalid date format. Please enter date in YYYY-MM-DD format: ";
+      getline(cin, newBook.dayStarted);
+    }
+  } else {
+    newBook.dayStarted = "";
+  }
+
+  // Input completion date and rating if status is "read"
   if (newBook.status == "read") {
     cout << "Day completed (YYYY-MM-DD): ";
     getline(cin, newBook.dayCompleted);
@@ -35,12 +57,33 @@ void addBook(string title, int databaseLength) {
       cout << "Invalid date format. Please enter date in YYYY-MM-DD format: ";
       getline(cin, newBook.dayCompleted);
     }
+    cout << "Rating (1-5, optional): ";
+    getline(cin, newBook.rating);
+    checkRating(newBook);
   } else {
     newBook.dayCompleted = "";
+    newBook.rating = "";
   }
+
+  cout << "Format (e.g., ebook, paperback, hardcover, audiobook): ";
+  getline(cin, newBook.format);
+  checkFormat(newBook);
+
+  if (newBook.format == "paperback" || newBook.format == "hardcover") {
+    cout << "Number of pages: ";
+    string pagesInput;
+    getline(cin, pagesInput);
+    try{
+      newBook.pages = stoi(pagesInput);
+    } catch (invalid_argument &){
+      newBook.pages = 0;
+    }
+  }
+  // Input notes
   cout << "Notes (if any, else leave blank): ";
   getline(cin, newBook.notes);
 
+  // Set dayAdded to current date
   auto time = chrono::system_clock::to_time_t(chrono::system_clock::now());
   stringstream ss;
   ss << put_time(localtime(&time), "%Y-%m-%d");
@@ -48,10 +91,16 @@ void addBook(string title, int databaseLength) {
 
   cout << "Added book: " << newBook.title << endl;
 
+  // Save new book to database
   saveBook(newBook, getenv("HOME"));
 }
 
-void deleteBook(int id, vector<Book> books) {
+void deleteBook(int id, vector<Book> &books) {
+  /* Function to delete a book from the database by ID.
+   * Params:
+   *  id - ID of the book to delete
+   *  books - vector of Book structs representing the collection
+   */
   for (int i = 0; i < books.size(); i++) {
     if (books[i].id == id) {
       books.erase(books.begin() + i);
@@ -61,7 +110,11 @@ void deleteBook(int id, vector<Book> books) {
   saveAllBooks(books, getenv("HOME"));
 }
 
-void list(vector<Book> books) {
+void list(vector<Book> &books) {
+  /* Function to list all books in the database in a formatted table.
+   * Params:
+   *  books - vector of Book structs representing the collection
+   */
 
   int termWidth = terminalWidth();
   float colWidth = float(termWidth) / 100;
@@ -95,10 +148,14 @@ void list(vector<Book> books) {
   }
 }
 
-void showBook(int id, vector<Book> books) {
+void showBook(int id, vector<Book> &books) {
+  /* Function to display detailed information about a specific book.
+   * Params:
+   *  id - ID of the book to display
+   *  books - vector of Book structs representing the collection
+   */
 
   int termWidth = terminalWidth();
-
   int maxLength = termWidth - 20;
 
   for (Book b : books) {
@@ -115,17 +172,41 @@ void showBook(int id, vector<Book> books) {
            << endl;
       cout << left << setw(15) << "Status: " << fit(b.status, maxLength)
            << endl;
-      cout << left << setw(15) << "Notes: " << fit(b.notes, maxLength) << endl;
+      cout << left << setw(15) << "Rating: " << fit(b.rating, maxLength)
+           << endl;
+      cout << left << setw(15) << "Format: " << fit(b.format, maxLength)
+           << endl;
+      cout << left << setw(15) << "Pages: " << b.pages << endl;
+
+      // nicely formatted output for the notes
+      cout << left << setw(15) << "Notes: ";
+      if (b.notes != "") {
+        auto wrappedNotes = wrapText(b.notes, maxLength);
+        cout << wrappedNotes[0] << endl;
+        for (size_t i = 1; i < wrappedNotes.size(); ++i) {
+          cout << setw(15) << " " << wrappedNotes[i] << endl;
+        }
+      } else {
+        cout << endl;
+      }
       return;
     }
   }
   cout << "Book with ID " << id << " not found." << endl;
 }
 
-void modifyBook(int id, string section, string newValue, vector<Book> books) {
+void modifyBook(int id, string section, string newValue, vector<Book> &books) {
+  /* Function to modify a specific section of a book's details.
+   * Params:
+   *  id - ID of the book to modify
+   *  section - section of the book to modify (e.g., "title", "author", etc.)
+   *  newValue - new value to set for the specified section
+   *  books - vector of Book structs representing the collection
+   */
 
   const vector<string> validSections{"title",     "author", "started",
-                                     "completed", "status", "notes"};
+                                     "completed", "status", "rating",
+                                     "notes",     "format", "pages"};
   const vector<string> validStatuses{"reading", "read", "tbr", "dnf"};
 
   if (find(validSections.begin(), validSections.end(), section) ==
@@ -168,87 +249,30 @@ void modifyBook(int id, string section, string newValue, vector<Book> books) {
         books[i].status = newValue;
       } else if (section == "notes") {
         books[i].notes = newValue;
+      } else if (section == "rating") {
+        books[i].rating = newValue;
+        const vector<string> validRatings{"1", "2", "3", "4", "5", ""};
+        if (find(validRatings.begin(), validRatings.end(), newValue) ==
+            validRatings.end()) {
+          cout << "Invalid rating. Please enter a rating between 1 and 5, or "
+                  "leave blank."
+               << endl;
+          return;
+        }
+      } else if (section == "format") {
+        books[i].format = newValue;
+      } else if (section == "pages") {
+        try {
+          books[i].pages = stoi(newValue);
+        } catch (invalid_argument &) {
+          cout << "Invalid number of pages. Please enter a valid integer."
+               << endl;
+          return;
+        }
       }
       cout << "Book with ID " << id << " has been modified." << endl;
     }
   }
 
   saveAllBooks(books, getenv("HOME"));
-}
-
-void plot_stacked_bars(const vector<vector<int>> &counts,
-                       const vector<string> &months,
-                       const vector<string> &statuses) {
-  int max_total = 0;
-
-  for (const auto &month_counts : counts)
-    max_total =
-        max(max_total, accumulate(month_counts.begin(), month_counts.end(), 0));
-
-  if (max_total == 0) {
-    cout << "No books finished this year!" << endl;
-    return;
-  }
-
-  cout << "\nStacked Bar Chart of Books Completed per Month\n";
-
-  int height = max_total * 2; // vertical resolution
-
-  // Print chart from top to bottom
-  for (int h = height; h >= 1; --h) {
-
-    float yval = h * max_total / float(height);
-    printf("%.1f |", yval);
-    for (int i = 0; i < counts.size(); ++i) {
-      int sum = 0;
-      for (int j = 0; j < counts[i].size(); ++j)
-        sum += counts[i][j];
-      int level = sum * height / max_total;
-      if (level >= h)
-        cout << "██";
-      else
-        cout << "   ";
-    }
-    cout << " " << endl;
-  }
-
-  // Print X-axis
-  cout << "     ";
-  for (int i = 0; i < counts.size(); ++i) {
-    cout << "---";
-  }
-  cout << endl;
-
-  // Print month labels
-  cout << "      ";
-  for (int i = 0; i < months.size(); ++i) {
-    cout << months[i] << " ";
-  }
-  cout << endl;
-
-  cout << "                     " << "Month" << endl;
-}
-
-// Usage
-void plot(vector<Book> books) {
-  vector<string> validStatus{"reading", "read", "tbr", "dnf"};
-  vector<string> months{"01", "02", "03", "04", "05", "06",
-                        "07", "08", "09", "10", "11", "12"};
-
-  vector<vector<int>> counts;
-  auto now = chrono::system_clock::to_time_t(chrono::system_clock::now());
-  stringstream ss;
-  ss << put_time(localtime(&now), "%Y");
-  string year = ss.str();
-
-  for (const auto &month : months) {
-    vector<int> month_counts;
-    for (const auto &status : validStatus) {
-      int c = filterDateStatus(books, year + "-" + month, status);
-      month_counts.push_back(c);
-    }
-    counts.push_back(month_counts);
-  }
-
-  plot_stacked_bars(counts, months, validStatus);
 }
