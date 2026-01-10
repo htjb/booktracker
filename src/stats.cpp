@@ -15,6 +15,7 @@ void stats(vector<Book> &books) {
   int readCount = 0;
   int tbrCount = 0;
   int dnfCount = 0;
+  int numberOfPages = 0;
 
   vector<int> ratings;
   for (const auto &book : books) {
@@ -23,6 +24,7 @@ void stats(vector<Book> &books) {
     } else if (book.status == "read") {
       readCount++;
       ratings.push_back(stoi(book.rating));
+      numberOfPages += book.pages;
     } else if (book.status == "tbr") {
       tbrCount++;
     } else if (book.status == "dnf") {
@@ -46,4 +48,5 @@ void stats(vector<Book> &books) {
   cout << "Currently reading: " << readingCount << endl;
   cout << "To be read (TBR): " << tbrCount << endl;
   cout << "Did not finish (DNF): " << dnfCount << endl;
+  cout << "Number of pages read: " << numberOfPages << endl;
 }
