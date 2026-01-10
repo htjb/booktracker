@@ -20,7 +20,7 @@ void saveBook(Book b, string homeDir) {
   ofstream out(homeDir + "/.book/books.txt", ios::app);
   out << b.id << "|" << b.title << "|" << b.author << "|" << b.dayStarted << "|"
       << b.dayCompleted << "|" << b.dayAdded << "|" << b.status << "|"
-      << b.rating << "|" << b.notes << "\n";
+      << b.rating << "|" << b.format << "|" << b.pages << "|" << b.notes << "\n";
 }
 
 vector<Book> loadBooks(string homeDir) {
@@ -50,6 +50,12 @@ vector<Book> loadBooks(string homeDir) {
     getline(ss, b.dayAdded, '|');
     getline(ss, b.status, '|');
     getline(ss, b.rating, '|');
+    getline(ss, b.format, '|');
+
+    string pagesstr;
+    getline(ss, pagesstr, '|');
+    b.pages = stoi(pagesstr);
+
     getline(ss, b.notes, '|');
     books.push_back(b);
   }
@@ -66,6 +72,6 @@ void saveAllBooks(const vector<Book> &books, const string homeDir) {
   for (Book b : books) {
     out << b.id << "|" << b.title << "|" << b.author << "|" << b.dayStarted
         << "|" << b.dayCompleted << "|" << b.dayAdded << "|" << b.status << "|"
-        << b.rating << "|" << b.notes << "\n";
+        << b.rating << "|" << b.format << "|" << b.pages << "|" << b.notes << "\n";
   }
 }

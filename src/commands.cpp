@@ -65,6 +65,20 @@ void addBook(string title, int databaseLength) {
     newBook.rating = "";
   }
 
+  cout << "Format (e.g., ebook, paperback, hardcover, audiobook): ";
+  getline(cin, newBook.format);
+  checkFormat(newBook);
+
+  if (newBook.format == "paperback" || newBook.format == "hardcover") {
+    cout << "Number of pages: ";
+    string pagesInput;
+    getline(cin, pagesInput);
+    try{
+      newBook.pages = stoi(pagesInput);
+    } catch (invalid_argument &){
+      newBook.pages = 0;
+    }
+  }
   // Input notes
   cout << "Notes (if any, else leave blank): ";
   getline(cin, newBook.notes);
@@ -160,6 +174,9 @@ void showBook(int id, vector<Book> &books) {
            << endl;
       cout << left << setw(15) << "Rating: " << fit(b.rating, maxLength)
            << endl;
+      cout << left << setw(15) << "Format: " << fit(b.format, maxLength)
+           << endl;
+      cout << left << setw(15) << "Pages: " << b.pages << endl;
 
       // nicely formatted output for the notes
       cout << left << setw(15) << "Notes: ";
@@ -187,8 +204,9 @@ void modifyBook(int id, string section, string newValue, vector<Book> &books) {
    *  books - vector of Book structs representing the collection
    */
 
-  const vector<string> validSections{"title",  "author", "started", "completed",
-                                     "status", "rating", "notes"};
+  const vector<string> validSections{"title",     "author", "started",
+                                     "completed", "status", "rating",
+                                     "notes",     "format", "pages"};
   const vector<string> validStatuses{"reading", "read", "tbr", "dnf"};
 
   if (find(validSections.begin(), validSections.end(), section) ==
@@ -238,6 +256,16 @@ void modifyBook(int id, string section, string newValue, vector<Book> &books) {
             validRatings.end()) {
           cout << "Invalid rating. Please enter a rating between 1 and 5, or "
                   "leave blank."
+               << endl;
+          return;
+        }
+      } else if (section == "format") {
+        books[i].format = newValue;
+      } else if (section == "pages") {
+        try {
+          books[i].pages = stoi(newValue);
+        } catch (invalid_argument &) {
+          cout << "Invalid number of pages. Please enter a valid integer."
                << endl;
           return;
         }

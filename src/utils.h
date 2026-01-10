@@ -6,6 +6,7 @@
 #include "book.h"
 
 void checkStatus(Book &newBook);
+void checkFormat(Book &newBook);
 void checkRating(Book &newBook);
 bool checkDate(std::string date);
 int filterDateStatus(std::vector<Book> books, std::string date, std::string status);

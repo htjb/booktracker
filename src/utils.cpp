@@ -26,6 +26,22 @@ void checkStatus(Book &newBook) {
   }
 }
 
+
+void checkFormat(Book &newBook) {
+  const vector<string> validFormat{"ebook", "audiobook", "paperback", "hardcover"};
+
+  while (find(validFormat.begin(), validFormat.end(), newBook.status) ==
+         validFormat.end()) {
+    cout << "Invalid status. Please enter one of the following: ";
+    for (const auto &status : validFormat) {
+      cout << status << " ";
+    }
+    cout << endl;
+    cout << "Status: ";
+    getline(cin, newBook.status);
+  }
+}
+
 void checkRating(Book &newBook) {
   /* Function to validate book rating input
    * Params:

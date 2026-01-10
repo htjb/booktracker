@@ -16,6 +16,8 @@ struct Book {
   std::string dayAdded;
   std::string status;
   std::string rating;
+  std::string format;
+  int pages;
   std::string notes;
 };
 
