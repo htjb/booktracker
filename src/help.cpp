@@ -10,6 +10,7 @@
 using namespace std;
 
 void displayHelp() {
+  /* Function to display the help menu for BookTracker. */
 
   int termWidth = terminalWidth();
   int cmdWidth = 25;
@@ -41,13 +42,13 @@ void displayHelp() {
     auto wrappedCMD = wrapText(cmd.first, cmdWidth);
     auto wrappedText = wrapText(cmd.second, descWidth);
     cout << left << setw(cmdWidth) << wrappedCMD[0] << wrappedText[0] << endl;
-    for (size_t i = 1; i < wrappedText.size(); ++i) {
-      if (i < wrappedCMD.size()) {
-        cout << left << setw(cmdWidth) << wrappedCMD[i] << wrappedText[i]
-             << endl;
-      } else {
-        cout << setw(cmdWidth) << " " << wrappedText[i] << endl;
-      }
+    int loopmax = max(wrappedCMD.size(), wrappedText.size());
+    string wcmd;
+    string wtext;
+    for (size_t i = 1; i < loopmax; ++i) {
+      wcmd = (i < wrappedCMD.size()) ? wrappedCMD[i] : "";
+      wtext = (i < wrappedText.size()) ? wrappedText[i] : "";
+      cout << left << setw(cmdWidth) << wcmd << wtext << endl;
     }
     cout << endl;
   }

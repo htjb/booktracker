@@ -1,2 +1,2 @@
-#define BOOKTRACKER_VERSION "0.3.0"
+#define BOOKTRACKER_VERSION "0.3.1"
 
