@@ -1,3 +1,4 @@
+// Description: Function to display statistics about the book collection.
 #include "book.h"
 #include <iostream>
 #include <vector>
