@@ -28,17 +28,17 @@ void checkStatus(Book &newBook) {
 
 
 void checkFormat(Book &newBook) {
-  const vector<string> validFormat{"ebook", "audiobook", "paperback", "hardcover"};
+  const vector<string> validFormat{"ebook", "audiobook", "paperback", "hardcover", ""};
 
-  while (find(validFormat.begin(), validFormat.end(), newBook.status) ==
+  while (find(validFormat.begin(), validFormat.end(), newBook.format) ==
          validFormat.end()) {
-    cout << "Invalid status. Please enter one of the following: ";
-    for (const auto &status : validFormat) {
-      cout << status << " ";
+    cout << "Invalid Format. Please enter one of the following: ";
+    for (const auto &format : validFormat) {
+      cout << format << " ";
     }
     cout << endl;
-    cout << "Status: ";
-    getline(cin, newBook.status);
+    cout << "Format: ";
+    getline(cin, newBook.format);
   }
 }
 

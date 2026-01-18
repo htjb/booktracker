@@ -72,6 +72,10 @@ book help
 
 but it currently isn't very helpful! The best thing to do is to refer to this README for help.
 
+## Licence
+
+Released under a non-commercial, MIT-style license. See LICENSE for details.
+
 ## Roadmap
 
 A roadmap is probably a bit too grand a term for a small project like this but ultimately I would like to 
